@@ -60,7 +60,6 @@ android {
 // to match the convention used in Web projects.
 secrets {
   propertiesFileName = ".env"
-  defaultPropertiesFileName = ".env.example"
 }
 
 googleServices {
