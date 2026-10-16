@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF0F5">
+
+    <!-- Top Bar with Back Button -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/ic_launcher_background"
+            android:backgroundTint="#FFFFFF"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#C9184A"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="A Letter For You 💌"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#C9184A"
+            android:paddingStart="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🌹"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="32dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Dearest Anushka ❤️"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#C9184A"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="18dp" />
+
+                <TextView
+                    android:id="@+id/messageText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pata nahi kaise shuru karoon... Jab se tum meri life mein aayi ho, sab kuch aur bhi khoobsurat aur pyara lagne laga hai.\n\nTumhari choti choti baatein, tumhari cute si smile, aur tumhara mere saath hona hi mera poora din bana deta hai. Jab bhi tumse baat hoti hai, aisa lagta hai waqt wahin tham jaye.\n\nMujhe bohot badi badi baatein karna toh nahi aata, par itna dil se keh sakta hoon ki tum mere liye bohot zyada special ho.\n\nMaine ye chota sa app sirf tumhare liye banaya hai — taaki jab bhi tum ise dekho, tumhare chehre par ek pyaari si muskaan aa jaye! 😊✨\n\nHar ek lamha jo tumhare sath bitaya hai, wo mere liye ek blessing hai. I promise to always cherish you, make you laugh, and stand by you.\n\nThank you for being in my life and making it so beautiful, Anushka! 🌹\n\nForever Yours,\nWith all my love ❤️"
+                    android:textSize="17sp"
+                    android:textColor="#4A0E17"
+                    android:lineSpacingExtra="6dp" />
+
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="3dp"
+                    android:background="#FF758F"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You are my favorite feeling ✨"
+                    android:textSize="15sp"
+                    android:textStyle="italic"
+                    android:textColor="#C9184A"
+                    android:layout_gravity="center_horizontal" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

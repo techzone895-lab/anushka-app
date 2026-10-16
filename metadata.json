@@ -1,0 +1,8 @@
+{
+  "name": "For Anushka ❤️",
+  "description": "A romantic surprise app for Anushka",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
