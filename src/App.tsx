@@ -25,7 +25,7 @@ export const AppContent: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('login');
 
   return (
-    <div className="min-h-screen w-full relative">
+    <main className="min-h-screen w-full relative bg-[#FFF0F5] text-[#4A0E17] flex flex-col justify-start">
       {currentScreen === 'login' && (
         <LoginScreen onProceed={() => setCurrentScreen('biometric')} />
       )}
@@ -67,7 +67,7 @@ export const AppContent: React.FC = () => {
       {currentScreen === 'letter' && (
         <SpecialMessageScreen onBack={() => setCurrentScreen('gallery')} />
       )}
-    </div>
+    </main>
   );
 };
 

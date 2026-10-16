@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Heart } from 'lucide-react';
 import { HeartsBackground } from '../components/HeartsBackground';
 import { SparklesOverlay } from '../components/SparklesOverlay';
+import { useMusic } from '../context/MusicContext';
 
 interface LoginScreenProps {
   onProceed: () => void;
@@ -9,13 +10,20 @@ interface LoginScreenProps {
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onProceed }) => {
   const [loading, setLoading] = useState(false);
+  const { playTrack } = useMusic();
 
   const handleSignIn = () => {
     setLoading(true);
+    playTrack('/audio/dummy_bgm.mp3', 'Anushka BGM 🎵');
     setTimeout(() => {
       setLoading(false);
       onProceed();
     }, 700);
+  };
+
+  const handleSkip = () => {
+    playTrack('/audio/dummy_bgm.mp3', 'Anushka BGM 🎵');
+    onProceed();
   };
 
   return (
@@ -54,7 +62,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onProceed }) => {
             </button>
 
             <button
-              onClick={onProceed}
+              onClick={handleSkip}
               className="w-full py-3.5 px-6 rounded-full bg-white/80 hover:bg-white text-[#C9184A] font-semibold text-base border border-pink-200 shadow-sm transition-all hover:shadow active:scale-95 cursor-pointer"
             >
               Enter Directly 💖

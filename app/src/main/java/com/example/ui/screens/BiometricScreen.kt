@@ -47,50 +47,51 @@ fun BiometricScreen(
             return
         }
 
-        val biometricManager = BiometricManager.from(fragmentActivity)
-        val authenticators = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-        when (biometricManager.canAuthenticate(authenticators)) {
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                // If not enrolled or supported, proceed seamlessly
-                onAuthenticated()
+        try {
+            val biometricManager = BiometricManager.from(fragmentActivity)
+            val authenticators = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+            val canAuth = biometricManager.canAuthenticate(authenticators)
+            if (canAuth != BiometricManager.BIOMETRIC_SUCCESS) {
+                // If not enrolled or unsupported in emulator, allow user to continue or click directly
                 return
             }
-        }
 
-        val executor = ContextCompat.getMainExecutor(fragmentActivity)
-        val prompt = BiometricPrompt(
-            fragmentActivity,
-            executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    // If user cancelled, they can click authenticate or skip
-                    if (errorCode != BiometricPrompt.ERROR_USER_CANCELED && errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                        Toast.makeText(context, "$errString", Toast.LENGTH_SHORT).show()
+            val executor = ContextCompat.getMainExecutor(fragmentActivity)
+            val prompt = BiometricPrompt(
+                fragmentActivity,
+                executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                        super.onAuthenticationError(errorCode, errString)
+                        if (errorCode == BiometricPrompt.ERROR_NO_BIOMETRICS ||
+                            errorCode == BiometricPrompt.ERROR_HW_NOT_PRESENT ||
+                            errorCode == BiometricPrompt.ERROR_HW_UNAVAILABLE) {
+                            onAuthenticated()
+                        }
+                    }
+
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        onAuthenticated()
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Toast.makeText(context, "Authentication failed. Try again 💖", Toast.LENGTH_SHORT).show()
                     }
                 }
+            )
 
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    onAuthenticated()
-                }
+            val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Anushka's Secret Space 🔐")
+                .setSubtitle("Use your fingerprint or device PIN to enter ✨")
+                .setAllowedAuthenticators(authenticators)
+                .build()
 
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(context, "Authentication failed. Try again 💖", Toast.LENGTH_SHORT).show()
-                }
-            }
-        )
-
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Anushka's Secret Space 🔐")
-            .setSubtitle("Use your fingerprint or device PIN to enter ✨")
-            .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-            .build()
-
-        prompt.authenticate(promptInfo)
+            prompt.authenticate(promptInfo)
+        } catch (e: Throwable) {
+            android.util.Log.e("BiometricScreen", "Error triggering biometric", e)
+        }
     }
 
     LaunchedEffect(Unit) {
