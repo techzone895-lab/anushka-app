@@ -62,12 +62,16 @@ object MusicManager {
                 val uri = Uri.parse("android.resource://${context.packageName}/$resId")
                 setDataSource(context.applicationContext, uri)
                 isLooping = true
-                val volume = if (_isMuted.value) 0f else 1f
-                setVolume(volume, volume)
-                prepare()
-                start()
+                prepareAsync()
+                setOnPreparedListener { mp ->
+                    try {
+                        mp.start()
+                    } catch (e: Exception) {
+                        Log.e("MusicManager", "Error starting player after prepare", e)
+                    }
+                }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MusicManager", "Error playing track $resId", e)
         }
     }

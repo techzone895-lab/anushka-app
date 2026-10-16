@@ -94,7 +94,7 @@ fun LoginScreen(
                             .shadow(8.dp, RoundedCornerShape(24.dp), spotColor = DeepRose)
                     ) {
                         Text(
-                            text = "Sign in with Google",
+                            text = "Enter Anushka's World ✨",
                             color = Color.White,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold
