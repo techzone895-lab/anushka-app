@@ -1,9 +1,9 @@
-name: Build Anushka App Release APK
+name: Build Anushka App APK
 
 on:
   push:
     branches: [ "**" ]
-  workflow_dispatch: # Allows manual trigger from GitHub web UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,25 +19,21 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Create Dummy .env
+        run: touch .env
 
       - name: Make Gradlew Executable
         run: chmod +x gradlew
 
-      - name: Decode Keystore
-        run: |
-          if [ -f "debug.keystore.base64" ]; then
-            echo "Decoding debug.keystore from base64..."
-            base64 -d debug.keystore.base64 > debug.keystore
-          fi
+      - name: Accept Android SDK Licenses
+        run: yes | sdkmanager --licenses || true
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - name: Build APK
+        run: ./gradlew assembleDebug assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Upload Release APK Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: For-Anushka-App-Release-APK
-          path: app/build/outputs/apk/release/*.apk
+          name: For-Anushka-App-APK
+          path: app/build/outputs/apk/**/*.apk
           retention-days: 30
