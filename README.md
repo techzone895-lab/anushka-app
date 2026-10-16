@@ -60,15 +60,33 @@ Add or replace photos inside:
 
 ---
 
-## 🚀 Running the App
+## 🚀 Running & Building
 
+### 📱 Android Release APK Build
+
+1. **Via GitHub Actions (Automated):**
+   - Push your code to GitHub or trigger the **Build Anushka App Release APK** workflow from the Actions tab.
+   - It will compile `./gradlew assembleRelease` using JDK 21 and the signed keystore.
+   - Download the generated signed APK artifact: `For-Anushka-App-Release-APK` (`app-release.apk`).
+
+2. **Locally in terminal / Android Studio:**
+   ```bash
+   # Decode keystore if not already present
+   base64 -d debug.keystore.base64 > debug.keystore
+
+   # Build signed release APK
+   ./gradlew assembleRelease
+   ```
+   The generated APK will be at:
+   `app/build/outputs/apk/release/app-release.apk`
+
+---
+
+### 🌐 Web (React + Vite)
 ```bash
-# Install dependencies
-npm install
-
 # Start Vite development server on port 3000
 npm run dev
 
-# Build for production
+# Build web distribution
 npm run build
 ```

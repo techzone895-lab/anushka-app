@@ -30,6 +30,7 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
     { src: '/images/anushka_10.jpg', caption: 'Pure Joy 🎈' },
     { src: '/images/anushka_11.jpg', caption: 'Beautiful Soul 💫' },
     { src: '/images/anushka_12.jpg', caption: 'My Whole World 👑' },
+    { src: '/images/anushka_13.jpg', caption: 'Forever & Always 💖' },
   ];
 
   const handleNextPhoto = () => {

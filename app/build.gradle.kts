@@ -33,11 +33,19 @@ android {
         keyAlias = "upload"
         keyPassword = System.getenv("KEY_PASSWORD")
       }
+    } else if (file("${rootDir}/debug.keystore").exists()) {
+      create("release") {
+        storeFile = file("${rootDir}/debug.keystore")
+        storePassword = "android"
+        keyAlias = "androiddebugkey"
+        keyPassword = "android"
+      }
     }
   }
 
   buildTypes {
     release {
+      signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
