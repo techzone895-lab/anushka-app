@@ -2,27 +2,24 @@ package com.example.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.R
 
-val PacificoFontFamily = FontFamily(
-    Font(R.font.pacifico, FontWeight.Normal)
-)
+// Use built-in Cursive font family for 100% crash-free, beautiful romantic typography
+val PacificoFontFamily = FontFamily.Cursive
 
 val Typography = Typography(
     headlineLarge = TextStyle(
         fontFamily = PacificoFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 38.sp,
-        lineHeight = 44.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 36.sp,
+        lineHeight = 42.sp,
         letterSpacing = 0.5.sp
     ),
     headlineMedium = TextStyle(
         fontFamily = PacificoFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         lineHeight = 34.sp
     ),

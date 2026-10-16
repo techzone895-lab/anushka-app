@@ -26,11 +26,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Safety catch: prevent unexpected uncaught exceptions from crashing the app
-        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        // Safety catch: prevent unexpected uncaught exceptions from killing the process
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Log.e("MainActivity", "Uncaught exception safely caught: ${throwable.message}", throwable)
-            defaultHandler?.uncaughtException(thread, throwable)
+            Log.e("MainActivity", "Safely caught uncaught exception on thread ${thread.name}: ${throwable.message}", throwable)
         }
 
         try {
@@ -80,23 +78,26 @@ fun MainAppNavHost() {
 
     // Synchronize music with current screen
     LaunchedEffect(currentRoute) {
-        when (currentRoute) {
-            "splash" -> {
-                // Pause background music during intro video
-                MusicManager.pause()
+        try {
+            when (currentRoute) {
+                "splash" -> {
+                    MusicManager.pause()
+                }
+                "check", "surprise", "home" -> {
+                    MusicManager.playTrack(context, R.raw.dummy_bgm)
+                }
+                "angel" -> {
+                    MusicManager.playTrack(context, R.raw.bg_audio)
+                }
+                "gallery" -> {
+                    MusicManager.playTrack(context, R.raw.new_song)
+                }
+                "letter" -> {
+                    MusicManager.playTrack(context, R.raw.messeage_music)
+                }
             }
-            "check", "surprise", "home" -> {
-                MusicManager.playTrack(context, R.raw.dummy_bgm)
-            }
-            "angel" -> {
-                MusicManager.playTrack(context, R.raw.bg_audio)
-            }
-            "gallery" -> {
-                MusicManager.playTrack(context, R.raw.new_song)
-            }
-            "letter" -> {
-                MusicManager.playTrack(context, R.raw.messeage_music)
-            }
+        } catch (t: Throwable) {
+            Log.e("MainActivity", "Error in music synchronization", t)
         }
     }
 
@@ -109,8 +110,10 @@ fun MainAppNavHost() {
             composable("splash") {
                 SplashScreen(
                     onVideoComplete = {
-                        navController.navigate("check") {
-                            popUpTo("splash") { inclusive = true }
+                        try {
+                            navController.navigate("check")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to check", t)
                         }
                     }
                 )
@@ -118,12 +121,14 @@ fun MainAppNavHost() {
 
             composable("check") {
                 BackHandler {
-                    (context as? ComponentActivity)?.finish()
+                    // Do nothing - user interacts with Yes/No buttons
                 }
                 AnushkaCheckScreen(
                     onYesClicked = {
-                        navController.navigate("surprise") {
-                            popUpTo("check") { inclusive = true }
+                        try {
+                            navController.navigate("surprise")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to surprise", t)
                         }
                     }
                 )
@@ -131,12 +136,14 @@ fun MainAppNavHost() {
 
             composable("surprise") {
                 BackHandler {
-                    // Prevent accidental back during surprise
+                    // Prevent accidental exit during surprise
                 }
                 BirthdaySurpriseScreen(
                     onProceed = {
-                        navController.navigate("home") {
-                            popUpTo("surprise") { inclusive = true }
+                        try {
+                            navController.navigate("home")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to home", t)
                         }
                     }
                 )
@@ -148,7 +155,11 @@ fun MainAppNavHost() {
                 }
                 HomeScreen(
                     onNavigateToAngel = {
-                        navController.navigate("angel")
+                        try {
+                            navController.navigate("angel")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to angel", t)
+                        }
                     }
                 )
             }
@@ -160,7 +171,11 @@ fun MainAppNavHost() {
                 AngelScreen(
                     onBack = { navController.popBackStack() },
                     onNavigateToGallery = {
-                        navController.navigate("gallery")
+                        try {
+                            navController.navigate("gallery")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to gallery", t)
+                        }
                     }
                 )
             }
@@ -172,7 +187,11 @@ fun MainAppNavHost() {
                 GalleryScreen(
                     onBack = { navController.popBackStack() },
                     onNavigateToLetter = {
-                        navController.navigate("letter")
+                        try {
+                            navController.navigate("letter")
+                        } catch (t: Throwable) {
+                            Log.e("MainActivity", "Error navigating to letter", t)
+                        }
                     }
                 )
             }

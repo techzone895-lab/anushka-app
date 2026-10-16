@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -22,11 +21,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.MusicManager
 import com.example.ui.theme.*
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
@@ -61,10 +55,6 @@ fun GlowingButton(
             repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"
-    )
-
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.Asset("button_glitter_blink.json")
     )
 
     Box(modifier = modifier) {
@@ -103,12 +93,6 @@ fun GlowingButton(
                 content()
             }
         }
-
-        LottieAnimation(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            modifier = Modifier.matchParentSize()
-        )
     }
 }
 
@@ -188,14 +172,37 @@ fun ConfettiAnimation(isTriggered: Boolean = true) {
 
 @Composable
 fun HeartsBackground(modifier: Modifier = Modifier) {
-    val heartsComposition by rememberLottieComposition(
-        LottieCompositionSpec.Asset("hearts.json")
+    val infiniteTransition = rememberInfiniteTransition(label = "hearts")
+    val phase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(8000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "heart_phase"
     )
-    LottieAnimation(
-        composition = heartsComposition,
-        iterations = LottieConstants.IterateForever,
-        modifier = modifier.fillMaxSize()
-    )
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val width = size.width
+        val height = size.height
+        if (width <= 0 || height <= 0) return@Canvas
+
+        for (i in 0 until 16) {
+            val seedX = (i * 73f) % width
+            val speed = 0.5f + (i % 4) * 0.2f
+            val yProgress = (phase * speed + (i * 0.13f)) % 1f
+            val y = height * (1f - yProgress)
+            val radius = 10f + (i % 3) * 5f
+            val alpha = (0.2f + 0.25f * sin(yProgress * Math.PI.toFloat())).coerceIn(0.05f, 0.45f)
+
+            drawCircle(
+                color = RomanticPink.copy(alpha = alpha),
+                radius = radius,
+                center = Offset(seedX, y)
+            )
+        }
+    }
 }
 
 @Composable

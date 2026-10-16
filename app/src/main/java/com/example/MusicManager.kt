@@ -3,7 +3,6 @@ package com.example
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +28,7 @@ object MusicManager {
         try {
             val volume = if (muted) 0f else 1f
             mediaPlayer?.setVolume(volume, volume)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MusicManager", "Error setting volume", e)
         }
     }
@@ -51,30 +50,39 @@ object MusicManager {
             // Stop previous player
             stopAndRelease()
 
-            currentResId = resId
-            mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                val uri = Uri.parse("android.resource://${context.packageName}/$resId")
-                setDataSource(context.applicationContext, uri)
-                isLooping = true
-                prepareAsync()
-                setOnPreparedListener { mp ->
-                    try {
-                        val volume = if (_isMuted.value) 0f else 1f
-                        mp.setVolume(volume, volume)
-                        mp.start()
-                    } catch (e: Exception) {
-                        Log.e("MusicManager", "Error starting player after prepare", e)
+            val afd = try {
+                context.resources.openRawResourceFd(resId)
+            } catch (t: Throwable) {
+                Log.w("MusicManager", "Could not open raw resource fd for $resId: ${t.message}")
+                null
+            }
+
+            if (afd != null) {
+                currentResId = resId
+                mediaPlayer = MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build()
+                    )
+                    setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                    afd.close()
+                    isLooping = true
+                    prepareAsync()
+                    setOnPreparedListener { mp ->
+                        try {
+                            val volume = if (_isMuted.value) 0f else 1f
+                            mp.setVolume(volume, volume)
+                            mp.start()
+                        } catch (e: Throwable) {
+                            Log.e("MusicManager", "Error starting player after prepare", e)
+                        }
                     }
-                }
-                setOnErrorListener { _, what, extra ->
-                    Log.w("MusicManager", "MediaPlayer error: what=$what, extra=$extra")
-                    true
+                    setOnErrorListener { _, what, extra ->
+                        Log.w("MusicManager", "MediaPlayer error: what=$what, extra=$extra")
+                        true
+                    }
                 }
             }
         } catch (e: Throwable) {
@@ -91,7 +99,7 @@ object MusicManager {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer?.pause()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MusicManager", "Error pausing music", e)
         }
     }
@@ -103,7 +111,7 @@ object MusicManager {
                 mediaPlayer?.setVolume(volume, volume)
                 mediaPlayer?.start()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MusicManager", "Error resuming music", e)
         }
     }
@@ -116,7 +124,7 @@ object MusicManager {
                 }
                 it.release()
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MusicManager", "Error releasing player", e)
         } finally {
             mediaPlayer = null

@@ -70,7 +70,6 @@ dependencies {
   implementation("androidx.compose.ui:ui-tooling-preview")
   implementation("nl.dionsegijn:konfetti-compose:2.0.4")
   implementation("androidx.appcompat:appcompat:1.7.0")
-  implementation("com.airbnb.android:lottie-compose:6.4.0")
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.runtime.ktx)
