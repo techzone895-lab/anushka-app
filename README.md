@@ -23,3 +23,4 @@ Jab aapke paas Anushka ki photos aa jayein, aapko bas unhe is folder mein daalna
 2. Select **Open** and choose this project folder: `remix_-remix_-remix_-ira-3`
 3. Let Gradle sync and build.
 4. Run on an emulator or connected physical Android phone!
+# anushka-app
