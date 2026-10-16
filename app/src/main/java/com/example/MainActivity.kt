@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -34,7 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private var auth: FirebaseAuth? = null
     private var firestore: FirebaseFirestore? = null
@@ -44,11 +45,11 @@ class MainActivity : FragmentActivity() {
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             val account = task.getResult(ApiException::class.java)
             firebaseAuthWithGoogle(account)
-        } catch (e: ApiException) {
+        } catch (e: Throwable) {
             Log.e("MainActivity", "Google sign in failed", e)
             Toast.makeText(this, "Welcome Anushka! Continuing ✨", Toast.LENGTH_SHORT).show()
             onAuthSuccessCallback?.invoke()
@@ -58,16 +59,24 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT
-            ),
-            navigationBarStyle = SystemBarStyle.light(
-                android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT
+        try {
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.light(
+                    android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT
+                ),
+                navigationBarStyle = SystemBarStyle.light(
+                    android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT
+                )
             )
-        )
+        } catch (t: Throwable) {
+            Log.e("MainActivity", "Failed to enable edge to edge", t)
+        }
 
-        initFirebaseAndAuth()
+        try {
+            initFirebaseAndAuth()
+        } catch (t: Throwable) {
+            Log.w("MainActivity", "Firebase init skipped: ${t.message}")
+        }
 
         setContent {
             MyApplicationTheme(dynamicColor = false) {
@@ -75,7 +84,12 @@ class MainActivity : FragmentActivity() {
                     onGoogleSignIn = { onComplete ->
                         onAuthSuccessCallback = onComplete
                         if (googleSignInClient != null) {
-                            signInLauncher.launch(googleSignInClient!!.signInIntent)
+                            try {
+                                signInLauncher.launch(googleSignInClient!!.signInIntent)
+                            } catch (t: Throwable) {
+                                Log.e("MainActivity", "Failed to launch Google Sign-In", t)
+                                onComplete()
+                            }
                         } else {
                             onComplete()
                         }
@@ -87,9 +101,6 @@ class MainActivity : FragmentActivity() {
 
     private fun initFirebaseAndAuth() {
         try {
-            auth = FirebaseAuth.getInstance()
-            firestore = FirebaseFirestore.getInstance()
-
             val webClientIdRes = resources.getIdentifier("default_web_client_id", "string", packageName)
             if (webClientIdRes != 0) {
                 val webClientId = resources.getString(webClientIdRes)
@@ -98,9 +109,11 @@ class MainActivity : FragmentActivity() {
                     .requestEmail()
                     .build()
                 googleSignInClient = GoogleSignIn.getClient(this, gso)
+                auth = FirebaseAuth.getInstance()
+                firestore = FirebaseFirestore.getInstance()
             }
-        } catch (e: Exception) {
-            Log.w("MainActivity", "Firebase / Google Sign-In not fully configured: ${e.message}")
+        } catch (t: Throwable) {
+            Log.w("MainActivity", "Firebase / Google Sign-In not configured: ${t.message}")
         }
     }
 
@@ -122,8 +135,8 @@ class MainActivity : FragmentActivity() {
                 }
                 onAuthSuccessCallback?.invoke()
             } ?: onAuthSuccessCallback?.invoke()
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Error in firebaseAuthWithGoogle", e)
+        } catch (t: Throwable) {
+            Log.e("MainActivity", "Error in firebaseAuthWithGoogle", t)
             onAuthSuccessCallback?.invoke()
         }
     }

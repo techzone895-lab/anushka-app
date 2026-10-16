@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
 class BalloonState(screenWidthDp: Int) {
-    val xOffset = Random.nextInt(10, if (screenWidthDp > 60) screenWidthDp - 50 else 300)
+    private val bound = (screenWidthDp - 50).coerceIn(50, 400)
+    val xOffset = Random.nextInt(10, bound + 1)
     val delay = Random.nextInt(0, 4000)
     val duration = Random.nextInt(4000, 9000)
     val size = Random.nextInt(40, 80)

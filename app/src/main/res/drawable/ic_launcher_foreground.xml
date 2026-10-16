@@ -1,8 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:width="66dp"
-        android:height="66dp"
-        android:drawable="@drawable/ic_launcher_icon"
-        android:gravity="center" />
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Centered Romantic Heart -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,72 C52.5,70.5 35,56 35,43 C35,34.5 41.5,28 50,28 C52.2,28 54,29 54,29 C54,29 55.8,28 58,28 C66.5,28 73,34.5 73,43 C73,56 55.5,70.5 54,72 Z" />
+    <!-- Sparkle Top Right -->
+    <path
+        android:fillColor="#FFF0F5"
+        android:pathData="M78,28 L80,33 L85,35 L80,37 L78,42 L76,37 L71,35 L76,33 Z" />
+    <!-- Sparkle Bottom Left -->
+    <path
+        android:fillColor="#FFF0F5"
+        android:pathData="M30,58 L31.5,61.5 L35,63 L31.5,64.5 L30,68 L28.5,64.5 L25,63 L28.5,61.5 Z" />
+</vector>
