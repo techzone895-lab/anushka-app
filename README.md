@@ -1,26 +1,74 @@
 # For Anushka ❤️ - Special Romantic App
 
-A customized, modern, romantic Android application created specially for **Anushka**.
+A customized, modern, romantic web application created specially for **Anushka**, rewritten in React + TypeScript + Vite with Tailwind CSS.
+
+---
+
+## ✨ Features Included
+
+1. **Romantic Greeting & Login Screen**:
+   - Welcome card with "Hello Anushka ❤️"
+   - Sign in with Google / Enter Directly options
+   - Floating romantic hearts background
+
+2. **Biometric & PIN Verification**:
+   - "Anushka's Secret Space 🔐"
+   - Interactive fingerprint sensor simulation with haptic feedback & bypass
+
+3. **Immersive Video Intro**:
+   - Cinematic Zyvraon intro video with audio & skip option
+
+4. **Anushka Verification Question**:
+   - "Kya aap sach me meri Anushka ho? 🙈❤️"
+   - "Yes, tumhari Anushka! 🥰" / playful "Nahi, koi aur hoon 😜" response
+
+5. **Birthday / Romantic Surprise Preparation**:
+   - Floating balloons and emoji animation (`FloatingBalloons`)
+   - Pulsing crown animation (`👑✨`)
+
+6. **Animated Romantic Home Screen**:
+   - Bouncing & pulsing "Anushka" in Pacifico typography
+   - Sparkling Canvas overlay effect
+   - Celebratory confetti showers
+   - Glowing button with glitter sparkles
+
+7. **My Angel Screen**:
+   - Featured portrait (`anushka_photo.jpg`) in a framed glassmorphic card
+   - Dedicated romantic melody (`bg_audio.mp3`)
+
+8. **Photo Memories Gallery**:
+   - 2-column memory photo grid (`anushka_1.jpg` to `anushka_12.jpg`)
+   - Fullscreen lightbox viewer with next/prev navigation
+   - Background music (`new_song.mp3`)
+
+9. **Heartfelt Secret Letter**:
+   - Personal letter text with authentic romantic message
+   - Dedicated letter music (`messeage_music.mp3`)
+
+10. **Audio Player**:
+    - Floating background music control FAB (mute/unmute) with current track indicators
 
 ---
 
 ## 📸 How to Add / Replace Photos for Anushka
 
-Jab aapke paas Anushka ki photos aa jayein, aapko bas unhe is folder mein daalna hai:
-`app/src/main/res/drawable/`
+Add or replace photos inside:
+`public/images/`
 
-1. **Main Featured Photo:**
-   - Name: `anushka_photo.jpg` (yeh "My Angel Anushka" screen par aayegi).
-2. **Gallery Photos:**
-   - Names: `anushka_1.jpg`, `anushka_2.jpg`, `anushka_3.jpg`, ... etc.
-   - App automatically jitni photos aap daalenge unhe detect karke gallery mein display kar dega!
+- **Featured Photo:** `public/images/anushka_photo.jpg`
+- **Gallery Photos:** `public/images/anushka_1.jpg`, `anushka_2.jpg`, etc.
 
 ---
 
-## 🚀 How to Run Locally in Android Studio
+## 🚀 Running the App
 
-1. **Open Android Studio**
-2. Select **Open** and choose this project folder: `remix_-remix_-remix_-ira-3`
-3. Let Gradle sync and build.
-4. Run on an emulator or connected physical Android phone!
-# anushka-app
+```bash
+# Install dependencies
+npm install
+
+# Start Vite development server on port 3000
+npm run dev
+
+# Build for production
+npm run build
+```
