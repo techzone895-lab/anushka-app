@@ -1,93 +1,81 @@
 import React, { useState } from 'react';
-import { Fingerprint, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { Fingerprint, Lock, ShieldCheck } from 'lucide-react';
+import { HeartsBackground } from '../components/HeartsBackground';
+import { SparklesOverlay } from '../components/SparklesOverlay';
 
 interface BiometricScreenProps {
   onAuthenticated: () => void;
 }
 
 export const BiometricScreen: React.FC<BiometricScreenProps> = ({ onAuthenticated }) => {
-  const [isScanning, setIsScanning] = useState(false);
-  const [authSuccess, setAuthSuccess] = useState(false);
+  const [authenticating, setAuthenticating] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleScan = () => {
-    setIsScanning(true);
+  const handleFingerprint = () => {
+    setAuthenticating(true);
     setTimeout(() => {
-      setIsScanning(false);
-      setAuthSuccess(true);
+      setAuthenticating(false);
+      setSuccess(true);
       setTimeout(() => {
         onAuthenticated();
-      }, 700);
-    }, 1200);
+      }, 600);
+    }, 1000);
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-[#0a0507] text-white overflow-hidden">
-      {/* Ambient pink glowing orbs */}
-      <div className="absolute top-1/4 -left-20 h-72 w-72 rounded-full bg-pink-600/20 blur-[100px]" />
-      <div className="absolute bottom-1/4 -right-20 h-72 w-72 rounded-full bg-rose-600/20 blur-[100px]" />
+    <div className="relative min-h-screen w-full flex items-center justify-center p-6 bg-gradient-to-b from-[#FFF0F5] via-[#FFCCD5] to-[#FFF0F5] overflow-hidden">
+      <HeartsBackground />
+      <SparklesOverlay />
 
-      <div className="relative z-10 w-full max-w-sm rounded-[32px] bg-gradient-to-b from-[#1c0f16] to-[#12070e] p-8 border border-white/10 shadow-2xl text-center">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#C9184A]/20 border border-[#C9184A]/40 text-[#FF758F]">
-          {authSuccess ? (
-            <ShieldCheck className="h-9 w-9 text-emerald-400 animate-scale-up" />
+      <div className="relative z-10 w-full max-w-md rounded-[32px] p-8 sm:p-10 text-center glass-card border border-white/80 shadow-2xl">
+        <div
+          onClick={handleFingerprint}
+          className={`mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full transition-all duration-300 cursor-pointer ${
+            success
+              ? 'bg-emerald-100 scale-110 shadow-lg'
+              : authenticating
+              ? 'bg-pink-100 scale-105 shadow-xl ring-4 ring-pink-300 animate-pulse'
+              : 'bg-[#FFE0E9] hover:scale-105 shadow-md active:scale-95'
+          }`}
+        >
+          {success ? (
+            <ShieldCheck className="h-14 w-14 text-emerald-600" />
           ) : (
-            <Lock className="h-8 w-8 text-[#FF758F]" />
+            <Fingerprint
+              className={`h-14 w-14 transition-colors ${
+                authenticating ? 'text-[#C9184A]' : 'text-[#C9184A]'
+              }`}
+            />
           )}
         </div>
 
-        <h2 className="text-2xl font-bold tracking-tight text-white mb-2 flex items-center justify-center gap-2">
-          <span>Anushka's Secret Space</span>
-          <span>🔐</span>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#C9184A] mb-3">
+          Anushka's Secret Space 🔐
         </h2>
 
-        <p className="text-sm text-pink-200/80 mb-8 leading-relaxed">
-          Use your fingerprint or device PIN to enter ✨
+        <p className="text-sm sm:text-base text-[#8B263E] mb-8 font-medium leading-relaxed">
+          {success
+            ? 'Access Granted! Welcome, beautiful ✨'
+            : authenticating
+            ? 'Verifying Anushka\'s fingerprint... 🌸'
+            : 'Touch the sensor or use PIN to enter ✨'}
         </p>
 
-        {/* Biometric Sensor Area */}
-        <div className="my-8 flex flex-col items-center justify-center">
+        <div className="flex flex-col gap-3">
           <button
-            onClick={handleScan}
-            disabled={isScanning || authSuccess}
-            className={`group relative flex h-28 w-28 items-center justify-center rounded-full border-2 transition-all duration-300 cursor-pointer ${
-              authSuccess
-                ? 'border-emerald-400 bg-emerald-500/20 text-emerald-300'
-                : isScanning
-                ? 'border-pink-400 bg-pink-500/20 text-pink-300 scale-105 shadow-[0_0_30px_rgba(255,117,143,0.5)]'
-                : 'border-pink-500/40 bg-pink-900/20 text-pink-400 hover:border-pink-400 hover:bg-pink-900/30 active:scale-95'
-            }`}
+            onClick={handleFingerprint}
+            disabled={authenticating || success}
+            className="w-full py-4 px-6 rounded-full bg-[#C9184A] hover:bg-[#b01440] active:scale-95 text-white font-bold text-base shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            {isScanning && (
-              <span className="absolute inset-0 rounded-full border-2 border-pink-400 animate-ping opacity-60" />
-            )}
-            <Fingerprint className={`h-14 w-14 transition-transform duration-300 ${isScanning ? 'animate-pulse scale-110' : ''}`} />
-          </button>
-
-          <span className="mt-4 text-xs font-medium tracking-wide uppercase text-pink-300/80">
-            {authSuccess
-              ? 'Access Granted 💖'
-              : isScanning
-              ? 'Verifying Anushka...'
-              : 'Touch Sensor to Unlock'}
-          </span>
-        </div>
-
-        {/* Instant Unlock Button */}
-        <div className="mt-6 flex flex-col gap-3">
-          <button
-            onClick={handleScan}
-            disabled={isScanning || authSuccess}
-            className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#C9184A] to-[#FF4D6D] text-white text-sm font-semibold tracking-wide shadow-md transition-all hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Sparkles className="h-4 w-4" />
-            <span>Verify Biometrics</span>
+            <Lock className="h-4 w-4" />
+            <span>{authenticating ? 'Scanning...' : 'Unlock with Fingerprint'}</span>
           </button>
 
           <button
             onClick={onAuthenticated}
-            className="text-xs text-pink-300/70 hover:text-pink-200 transition-colors py-1 cursor-pointer"
+            className="w-full py-3 px-6 rounded-full bg-white/70 hover:bg-white text-[#8B263E] font-medium text-sm border border-pink-200 transition-all cursor-pointer"
           >
-            Bypass / Skip verification
+            Skip / Continue Directly ✨
           </button>
         </div>
       </div>

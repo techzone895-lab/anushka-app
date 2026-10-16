@@ -1,150 +1,110 @@
-import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
-import { Volume2, VolumeX, Music } from 'lucide-react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface MusicContextType {
-  currentTrack: string | null;
-  trackTitle: string;
-  isMuted: boolean;
   isPlaying: boolean;
-  playTrack: (src: string, title?: string) => void;
-  pauseAudio: () => void;
-  resumeAudio: () => void;
+  isMuted: boolean;
+  currentTrack: string;
+  trackName: string;
+  playTrack: (src: string, name?: string) => void;
+  pauseMusic: () => void;
   toggleMute: () => void;
 }
 
-const MusicContext = createContext<MusicContextType | null>(null);
+const MusicContext = createContext<MusicContextType | undefined>(undefined);
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [trackTitle, setTrackTitle] = useState<string>('');
-  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const userInteractedRef = useRef<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [currentTrack, setCurrentTrack] = useState<string>('');
+  const [trackName, setTrackName] = useState<string>('Romantic BGM');
 
-  // Initialize audio element
   useEffect(() => {
     const audio = new Audio();
     audio.loop = true;
     audio.preload = 'auto';
     audioRef.current = audio;
 
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
-    audio.addEventListener('play', onPlay);
-    audio.addEventListener('pause', onPause);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
 
-    // Global click listener to unlock autoplay
-    const unlockAutoplay = () => {
-      userInteractedRef.current = true;
-      if (audioRef.current && audioRef.current.src && audioRef.current.paused && !isMuted) {
-        audioRef.current.play().catch(() => {});
-      }
-      window.removeEventListener('click', unlockAutoplay);
-      window.removeEventListener('touchstart', unlockAutoplay);
-    };
-
-    window.addEventListener('click', unlockAutoplay);
-    window.addEventListener('touchstart', unlockAutoplay);
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
 
     return () => {
-      audio.removeEventListener('play', onPlay);
-      audio.removeEventListener('pause', onPause);
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
       audio.pause();
       audio.src = '';
-      window.removeEventListener('click', unlockAutoplay);
-      window.removeEventListener('touchstart', unlockAutoplay);
     };
   }, []);
 
-  const playTrack = useCallback((src: string, title?: string) => {
+  const playTrack = (src: string, name: string = 'Romantic Melody') => {
     if (!audioRef.current) return;
-    
-    // If already playing this track, don't restart
-    if (currentTrack === src && !audioRef.current.paused) {
+
+    if (currentTrack === src && isPlaying) {
       return;
     }
 
+    setTrackName(name);
     setCurrentTrack(src);
-    if (title) setTrackTitle(title);
 
     audioRef.current.src = src;
     audioRef.current.muted = isMuted;
 
-    audioRef.current.play().then(() => {
-      setIsPlaying(true);
-    }).catch(() => {
-      // Audio autoplay blocked until user interaction
-      setIsPlaying(false);
-    });
-  }, [currentTrack, isMuted]);
+    const playPromise = audioRef.current.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          setIsPlaying(false);
+        });
+    }
+  };
 
-  const pauseAudio = useCallback(() => {
+  const pauseMusic = () => {
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
     }
-  }, []);
+  };
 
-  const resumeAudio = useCallback(() => {
-    if (audioRef.current && audioRef.current.src) {
-      audioRef.current.play().catch(() => {});
-    }
-  }, []);
-
-  const toggleMute = useCallback(() => {
+  const toggleMute = () => {
     if (!audioRef.current) return;
     const nextMuted = !isMuted;
     setIsMuted(nextMuted);
     audioRef.current.muted = nextMuted;
-    if (!nextMuted && audioRef.current.paused && audioRef.current.src) {
+    if (!isPlaying && !nextMuted) {
       audioRef.current.play().catch(() => {});
     }
-  }, [isMuted]);
+  };
 
   return (
     <MusicContext.Provider
       value={{
-        currentTrack,
-        trackTitle,
-        isMuted,
         isPlaying,
+        isMuted,
+        currentTrack,
+        trackName,
         playTrack,
-        pauseAudio,
-        resumeAudio,
+        pauseMusic,
         toggleMute,
       }}
     >
       {children}
-      {/* Floating Audio FAB matching MainActivity.kt bottom-right FAB */}
-      {currentTrack && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
-          {isPlaying && !isMuted && (
-            <div className="hidden sm:flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 shadow-md backdrop-blur-sm border border-pink-200">
-              <span className="flex h-2 w-2 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-              </span>
-              <span className="text-xs font-semibold text-[#C9184A] max-w-[120px] truncate">
-                {trackTitle || 'Romantic Melody'}
-              </span>
-            </div>
-          )}
 
-          <button
-            onClick={toggleMute}
-            className="flex h-13 w-13 items-center justify-center rounded-full bg-[#C9184A] text-white shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95 hover:shadow-[0_8px_20px_rgba(201,24,74,0.45)] cursor-pointer"
-            title={isMuted ? 'Unmute Background Music' : 'Mute Background Music'}
-            aria-label={isMuted ? 'Unmute Background Music' : 'Mute Background Music'}
-          >
-            {isMuted ? (
-              <VolumeX className="h-6 w-6 stroke-[2.2]" />
-            ) : (
-              <Volume2 className="h-6 w-6 stroke-[2.2]" />
-            )}
-          </button>
-        </div>
-      )}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
+        <button
+          onClick={toggleMute}
+          className={`flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95 cursor-pointer ${
+            isMuted ? 'bg-[#590D22] text-white' : 'bg-[#C9184A] text-white animate-pulse'
+          }`}
+          aria-label={isMuted ? 'Unmute music' : 'Mute music'}
+        >
+          {isMuted ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
+        </button>
+      </div>
     </MusicContext.Provider>
   );
 };

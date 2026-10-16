@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Mail, Sparkles, Heart } from 'lucide-react';
+import { ArrowLeft, Mail, Heart } from 'lucide-react';
 import { useMusic } from '../context/MusicContext';
 import { ImageViewerModal } from './ImageViewerModal';
 
@@ -16,7 +16,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
     playTrack('/audio/new_song.mp3', 'Memories Melody 📸');
   }, [playTrack]);
 
-  // The 12 gallery images discovered in drawable/
   const galleryImages = [
     { src: '/images/anushka_1.jpg', caption: 'Precious Smile 💕' },
     { src: '/images/anushka_2.jpg', caption: 'Sweet Moments ✨' },
@@ -49,7 +48,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
 
   return (
     <div className="relative min-h-screen w-full flex flex-col bg-[#FFF0F5] pb-24 text-[#4A0E17]">
-      {/* Top Bar matching activity_gallery.xml */}
       <header className="sticky top-0 z-30 flex items-center gap-3 bg-[#FFF0F5]/90 px-4 pt-10 pb-3 backdrop-blur-md border-b border-pink-200/50">
         <button
           onClick={onBack}
@@ -70,7 +68,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
         </div>
       </header>
 
-      {/* Grid of Images matching RecyclerView 2 columns */}
       <main className="flex-1 p-3 sm:p-5 max-w-4xl mx-auto w-full">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {galleryImages.map((img, index) => (
@@ -86,7 +83,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
-                    // Fallback to Anushka photo if any index has issue
                     (e.currentTarget as HTMLImageElement).src = '/images/anushka_photo.jpg';
                   }}
                 />
@@ -108,7 +104,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
         </div>
       </main>
 
-      {/* Fixed Bottom Bar matching bottomBar in activity_gallery.xml */}
       <div className="fixed bottom-0 inset-x-0 z-40 p-4 bg-gradient-to-t from-[#FFF0F5] via-[#FFF0F5]/90 to-transparent flex items-center justify-center">
         <div className="w-full max-w-md">
           <button
@@ -124,7 +119,6 @@ export const GalleryScreen: React.FC<GalleryScreenProps> = ({ onBack, onNavigate
         </div>
       </div>
 
-      {/* Fullscreen Image Viewer Modal */}
       {selectedImageIndex !== null && (
         <ImageViewerModal
           imageSrc={galleryImages[selectedImageIndex].src}

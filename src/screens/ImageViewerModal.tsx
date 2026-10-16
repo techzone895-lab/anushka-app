@@ -21,7 +21,6 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300 animate-fadeIn"
       onClick={onClose}
     >
-      {/* Close Button matching Android close button */}
       <button
         onClick={onClose}
         className="absolute top-6 left-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-lg transition-transform hover:scale-110 active:scale-95 cursor-pointer"
@@ -30,7 +29,6 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
         <X className="h-6 w-6" />
       </button>
 
-      {/* Prev Navigation */}
       {onPrev && (
         <button
           onClick={(e) => {
@@ -44,7 +42,6 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
         </button>
       )}
 
-      {/* Next Navigation */}
       {onNext && (
         <button
           onClick={(e) => {
@@ -58,7 +55,6 @@ export const ImageViewerModal: React.FC<ImageViewerModalProps> = ({
         </button>
       )}
 
-      {/* Image Container */}
       <div
         className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-2xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}

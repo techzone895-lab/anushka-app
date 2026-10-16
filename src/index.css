@@ -33,7 +33,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom pulse and glow keyframes */
 @keyframes heartPulse {
   0%, 100% {
     transform: scale(1);
@@ -73,7 +72,6 @@ body {
   animation: subtleFloat 3s ease-in-out infinite;
 }
 
-/* Glassmorphism utility */
 .glass-card {
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);

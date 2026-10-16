@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -7,41 +7,23 @@ interface SplashScreenProps {
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.play().catch((err) => {
-      console.warn('Autoplay with sound failed, attempting muted video:', err);
-      video.muted = true;
-      video.play().catch(() => {
-        // If video fails entirely, move to next screen after delay
-        setTimeout(onComplete, 2000);
-      });
-    });
-  }, [onComplete]);
-
   return (
-    <div className="relative min-h-screen w-full bg-black flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden">
       <video
         ref={videoRef}
         src="/video/zyvraon_intro.mp4"
-        className="h-full w-full object-contain"
-        playsInline
         autoPlay
+        playsInline
         onEnded={onComplete}
-        onError={() => {
-          console.warn('Video failed, proceeding');
-          onComplete();
-        }}
+        onError={onComplete}
+        className="h-full w-full object-cover"
       />
 
-      {/* Skip button */}
       <button
         onClick={onComplete}
-        className="absolute top-6 right-6 z-20 rounded-full bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 cursor-pointer"
+        className="absolute bottom-8 right-8 z-50 rounded-full bg-white/20 px-6 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/30 cursor-pointer"
       >
-        Skip Intro ⏩
+        Skip Intro ⏭️
       </button>
     </div>
   );

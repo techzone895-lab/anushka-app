@@ -1,19 +1,31 @@
 package com.example
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 object MusicManager {
     private var mediaPlayer: MediaPlayer? = null
     private var currentResId: Int = 0
-    private var isUserMuted: Boolean = false
+
+    private val _isMuted = MutableStateFlow(false)
+    val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
 
     fun getCurrentResId(): Int = currentResId
-    fun isMuted(): Boolean = isUserMuted
+
+    fun isMuted(): Boolean = _isMuted.value
+
+    fun toggleMute() {
+        setMuted(!_isMuted.value)
+    }
 
     fun setMuted(muted: Boolean) {
-        isUserMuted = muted
+        _isMuted.value = muted
         try {
             val volume = if (muted) 0f else 1f
             mediaPlayer?.setVolume(volume, volume)
@@ -22,25 +34,46 @@ object MusicManager {
         }
     }
 
-    fun start(context: Context, resId: Int) {
+    fun playTrack(context: Context, resId: Int) {
         try {
-            if (mediaPlayer != null && currentResId != resId) {
-                stopAndRelease()
+            if (resId == 0) return
+
+            // If already playing this track, ensure it's playing and volume is right
+            if (mediaPlayer != null && currentResId == resId) {
+                if (mediaPlayer?.isPlaying == false) {
+                    val volume = if (_isMuted.value) 0f else 1f
+                    mediaPlayer?.setVolume(volume, volume)
+                    mediaPlayer?.start()
+                }
+                return
             }
 
-            if (mediaPlayer == null) {
-                currentResId = resId
-                mediaPlayer = MediaPlayer.create(context.applicationContext, resId)
-                mediaPlayer?.isLooping = true
-                val volume = if (isUserMuted) 0f else 1f
-                mediaPlayer?.setVolume(volume, volume)
-                mediaPlayer?.start()
-            } else if (mediaPlayer?.isPlaying == false) {
-                mediaPlayer?.start()
+            // Stop previous player
+            stopAndRelease()
+
+            currentResId = resId
+            mediaPlayer = MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                val uri = Uri.parse("android.resource://${context.packageName}/$resId")
+                setDataSource(context.applicationContext, uri)
+                isLooping = true
+                val volume = if (_isMuted.value) 0f else 1f
+                setVolume(volume, volume)
+                prepare()
+                start()
             }
         } catch (e: Exception) {
-            Log.e("MusicManager", "Error starting music", e)
+            Log.e("MusicManager", "Error playing track $resId", e)
         }
+    }
+
+    fun start(context: Context, resId: Int) {
+        playTrack(context, resId)
     }
 
     fun pause() {
@@ -56,6 +89,8 @@ object MusicManager {
     fun resume() {
         try {
             if (mediaPlayer != null && mediaPlayer?.isPlaying == false) {
+                val volume = if (_isMuted.value) 0f else 1f
+                mediaPlayer?.setVolume(volume, volume)
                 mediaPlayer?.start()
             }
         } catch (e: Exception) {

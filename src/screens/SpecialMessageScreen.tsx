@@ -26,7 +26,6 @@ export const SpecialMessageScreen: React.FC<SpecialMessageScreenProps> = ({ onBa
     <div className="relative min-h-screen w-full flex flex-col bg-[#FFF0F5] pb-16 text-[#4A0E17] overflow-y-auto">
       <SparklesOverlay />
 
-      {/* Top Bar matching activity_special_message.xml */}
       <header className="sticky top-0 z-30 flex items-center justify-between bg-[#FFF0F5]/90 px-4 pt-10 pb-3 backdrop-blur-md border-b border-pink-200/50">
         <div className="flex items-center gap-3">
           <button
@@ -45,7 +44,6 @@ export const SpecialMessageScreen: React.FC<SpecialMessageScreenProps> = ({ onBa
         <span className="text-2xl select-none pr-1">🌹</span>
       </header>
 
-      {/* Letter Container */}
       <main className="relative z-10 flex-1 p-4 sm:p-6 max-w-2xl mx-auto w-full my-4">
         <div
           className="rounded-[28px] bg-white p-7 sm:p-10 shadow-xl border border-pink-100"
@@ -53,7 +51,6 @@ export const SpecialMessageScreen: React.FC<SpecialMessageScreenProps> = ({ onBa
             boxShadow: '0 20px 40px -15px rgba(255, 117, 143, 0.35)',
           }}
         >
-          {/* Header */}
           <div className="text-center mb-6">
             <h2 className="font-pacifico text-2xl sm:text-3xl text-[#C9184A] mb-1">
               My Dearest Anushka ❤️
@@ -65,7 +62,6 @@ export const SpecialMessageScreen: React.FC<SpecialMessageScreenProps> = ({ onBa
             </div>
           </div>
 
-          {/* Letter Body - verbatim from Android XML */}
           <div className="space-y-4 text-base sm:text-[17px] text-[#4A0E17] leading-relaxed font-normal">
             <p>
               Pata nahi kaise shuru karoon... Jab se tum meri life mein aayi ho, sab kuch aur bhi khoobsurat aur pyara lagne laga hai.
@@ -97,12 +93,10 @@ export const SpecialMessageScreen: React.FC<SpecialMessageScreenProps> = ({ onBa
             </div>
           </div>
 
-          {/* Divider */}
           <div className="my-8 flex justify-center">
             <div className="h-1 w-16 rounded-full bg-[#FF758F]" />
           </div>
 
-          {/* Footer quote */}
           <p className="text-center font-serif text-sm sm:text-base italic text-[#C9184A]">
             "You are my favorite feeling ✨"
           </p>

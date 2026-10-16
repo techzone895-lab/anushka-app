@@ -134,7 +134,7 @@ class LoginActivity : ComponentActivity() {
     }
 
     private fun proceedToNext() {
-        startActivity(Intent(this, BiometricAuthActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 }

@@ -1,6 +1,6 @@
-# For Anushka ❤️ - Special Romantic App
+# For Anushka ❤️ - Special Romantic Android App
 
-A customized, modern, romantic web application created specially for **Anushka**, rewritten in React + TypeScript + Vite with Tailwind CSS.
+A customized, modern, romantic native Android application created specially for **Anushka**, built with **Kotlin**, **Jetpack Compose**, and **Material 3**.
 
 ---
 
@@ -9,84 +9,71 @@ A customized, modern, romantic web application created specially for **Anushka**
 1. **Romantic Greeting & Login Screen**:
    - Welcome card with "Hello Anushka ❤️"
    - Sign in with Google / Enter Directly options
-   - Floating romantic hearts background
+   - Floating romantic hearts Lottie animation and sparkles overlay
 
 2. **Biometric & PIN Verification**:
    - "Anushka's Secret Space 🔐"
-   - Interactive fingerprint sensor simulation with haptic feedback & bypass
+   - Native Android `BiometricPrompt` supporting fingerprint and device PIN credentials with graceful skip fallback
 
 3. **Immersive Video Intro**:
-   - Cinematic Zyvraon intro video with audio & skip option
+   - Cinematic intro video (`zyvraon_intro.mp4`) with smooth audio and skip option
 
 4. **Anushka Verification Question**:
    - "Kya aap sach me meri Anushka ho? 🙈❤️"
-   - "Yes, tumhari Anushka! 🥰" / playful "Nahi, koi aur hoon 😜" response
+   - "Yes, tumhari Anushka! 🥰" / playful "Nahi, koi aur hoon 😜" response with cute dialog
 
 5. **Birthday / Romantic Surprise Preparation**:
-   - Floating balloons and emoji animation (`FloatingBalloons`)
+   - Floating balloons and emoji animation (`FloatingBalloonsAnimation`)
    - Pulsing crown animation (`👑✨`)
+   - Celebratory confetti showers
 
 6. **Animated Romantic Home Screen**:
-   - Bouncing & pulsing "Anushka" in Pacifico typography
+   - Animated cursive "Anushka" in Pacifico typography
    - Sparkling Canvas overlay effect
    - Celebratory confetti showers
    - Glowing button with glitter sparkles
 
 7. **My Angel Screen**:
-   - Featured portrait (`anushka_photo.jpg`) in a framed glassmorphic card
+   - Featured portrait (`anushka_photo.jpg`) in a framed romantic card with soft glow
    - Dedicated romantic melody (`bg_audio.mp3`)
 
 8. **Photo Memories Gallery**:
-   - 2-column memory photo grid (`anushka_1.jpg` to `anushka_12.jpg`)
-   - Fullscreen lightbox viewer with next/prev navigation
+   - 2-column memory photo grid with all 13 photos (`anushka_1.jpg` to `anushka_13.jpg`)
+   - Captions and romantic badges on each photo
+   - Fullscreen modal photo viewer with next/prev navigation, touch gestures, and memory counter
    - Background music (`new_song.mp3`)
 
 9. **Heartfelt Secret Letter**:
-   - Personal letter text with authentic romantic message
+   - Personal letter with authentic romantic Hindi message
+   - Pacifico and Serif typography, custom dividers, and confetti
    - Dedicated letter music (`messeage_music.mp3`)
 
 10. **Audio Player**:
-    - Floating background music control FAB (mute/unmute) with current track indicators
+    - Floating background music control FAB (mute/unmute) with synchronized playback across routes
 
 ---
 
-## 📸 How to Add / Replace Photos for Anushka
+## 📸 Photo & Audio Assets
 
-Add or replace photos inside:
-`public/images/`
+All media assets are located in the Android resource directories:
 
-- **Featured Photo:** `public/images/anushka_photo.jpg`
-- **Gallery Photos:** `public/images/anushka_1.jpg`, `anushka_2.jpg`, etc.
-
----
-
-## 🚀 Running & Building
-
-### 📱 Android Release APK Build
-
-1. **Via GitHub Actions (Automated):**
-   - Push your code to GitHub or trigger the **Build Anushka App Release APK** workflow from the Actions tab.
-   - It will compile `./gradlew assembleRelease` using JDK 21 and the signed keystore.
-   - Download the generated signed APK artifact: `For-Anushka-App-Release-APK` (`app-release.apk`).
-
-2. **Locally in terminal / Android Studio:**
-   ```bash
-   # Decode keystore if not already present
-   base64 -d debug.keystore.base64 > debug.keystore
-
-   # Build signed release APK
-   ./gradlew assembleRelease
-   ```
-   The generated APK will be at:
-   `app/build/outputs/apk/release/app-release.apk`
+- **Featured Photo & Gallery:** `app/src/main/res/drawable/anushka_photo.jpg`, `anushka_1.jpg` … `anushka_13.jpg`
+- **Audio & Video:** `app/src/main/res/raw/` (`bg_audio.mp3`, `dummy_bgm.mp3`, `new_song.mp3`, `messeage_music.mp3`, `zyvraon_intro.mp4`)
+- **Lottie Animations:** `app/src/main/assets/` (`hearts.json`, `button_glitter_blink.json`)
+- **Fonts:** `app/src/main/res/font/pacifico.ttf`
 
 ---
 
-### 🌐 Web (React + Vite)
+## 🚀 Building & Testing
+
+### Android Build
 ```bash
-# Start Vite development server on port 3000
-npm run dev
+gradle assembleDebug
+```
+The compiled APK will be output at:
+`app/build/outputs/apk/debug/app-debug.apk`
 
-# Build web distribution
-npm run build
+### Local JVM Unit & Robolectric Tests
+```bash
+gradle :app:testDebugUnitTest
 ```

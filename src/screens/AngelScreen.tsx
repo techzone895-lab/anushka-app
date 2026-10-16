@@ -28,7 +28,6 @@ export const AngelScreen: React.FC<AngelScreenProps> = ({ onBack, onNavigateToGa
     <div className="relative min-h-screen w-full flex flex-col items-center justify-between p-4 sm:p-6 bg-gradient-to-b from-[#FFF0F5] via-[#FFCCD5] to-[#FFF0F5] overflow-y-auto">
       <SparklesOverlay />
 
-      {/* Top Bar with Back Button */}
       <div className="relative z-20 w-full max-w-md flex items-center justify-between pt-2">
         <button
           onClick={onBack}
@@ -40,13 +39,11 @@ export const AngelScreen: React.FC<AngelScreenProps> = ({ onBack, onNavigateToGa
         <span className="text-xl">✨</span>
       </div>
 
-      {/* Main Content */}
       <div className="relative z-10 w-full max-w-md mx-auto my-auto flex flex-col items-center text-center py-4">
         <h2 className="font-pacifico text-3xl sm:text-4xl text-[#C9184A] mb-5">
           My Angel Anushka ✨
         </h2>
 
-        {/* Featured Portrait of Anushka */}
         <div
           className="relative mb-6 w-full max-w-[280px] sm:max-w-[320px] rounded-[28px] overflow-hidden border-4 border-white shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
           style={{
@@ -58,14 +55,12 @@ export const AngelScreen: React.FC<AngelScreenProps> = ({ onBack, onNavigateToGa
             alt="My Angel Anushka"
             className="w-full aspect-[3/4] object-cover bg-pink-100"
             onError={(e) => {
-              // Fallback if image path has issue
               (e.currentTarget as HTMLImageElement).src = '/images/anushka_1.jpg';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        {/* Romantic Message Card */}
         <div
           className="w-full rounded-[24px] p-5 sm:p-6 glass-card mb-6"
           style={{
@@ -79,7 +74,6 @@ export const AngelScreen: React.FC<AngelScreenProps> = ({ onBack, onNavigateToGa
           </p>
         </div>
 
-        {/* Action Button */}
         <GlowingButton onClick={onNavigateToGallery}>
           <span>Our Memories & Gallery 📸</span>
           <Images className="h-5 w-5" />

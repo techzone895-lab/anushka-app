@@ -5,57 +5,46 @@ interface GlowingButtonProps {
   onClick: () => void;
   children: React.ReactNode;
   className?: string;
-  disabled?: boolean;
 }
 
 export const GlowingButton: React.FC<GlowingButtonProps> = ({
   onClick,
   children,
   className = '',
-  disabled = false,
 }) => {
-  const [glitterData, setGlitterData] = useState<any>(null);
+  const [animationData, setAnimationData] = useState<any>(null);
 
   useEffect(() => {
     fetch('/assets/button_glitter_blink.json')
-      .then((res) => res.json())
-      .then((data) => setGlitterData(data))
-      .catch(() => {
-        // Silent fallback to pure CSS shimmer
-      });
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load lottie');
+        return res.json();
+      })
+      .then((data) => setAnimationData(data))
+      .catch(() => {});
   }, []);
 
   return (
-    <div className={`relative inline-block ${className}`}>
+    <div className="relative inline-block group">
       <button
         onClick={onClick}
-        disabled={disabled}
-        className={`group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-[#C9184A] to-[#590D22] px-7 py-3.5 text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_10px_25px_rgba(201,24,74,0.5)] active:scale-95 disabled:pointer-events-none disabled:opacity-60 cursor-pointer ${
-          !disabled ? 'animate-[pulse_2.2s_ease-in-out_infinite]' : ''
-        }`}
+        className={`relative z-10 flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-white text-base sm:text-lg shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer bg-gradient-to-r from-[#C9184A] via-[#FF4D6D] to-[#590D22] hover:shadow-[0_0_30px_rgba(201,24,74,0.6)] ${className}`}
         style={{
-          boxShadow: '0 10px 25px -4px rgba(201, 24, 74, 0.45), 0 4px 10px -2px rgba(201, 24, 74, 0.25)',
+          boxShadow: '0 10px 30px -5px rgba(201, 24, 74, 0.55)',
         }}
       >
-        <span className="relative z-10 flex items-center gap-2">
-          {children}
-        </span>
-
-        {/* Shimmer overlay */}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-
-        {/* Glitter Lottie overlay if available */}
-        {glitterData && (
-          <div className="pointer-events-none absolute inset-0 z-0 opacity-40 mix-blend-screen">
-            <Lottie
-              animationData={glitterData}
-              loop={true}
-              autoplay={true}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        )}
+        {children}
       </button>
+
+      {animationData && (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center overflow-hidden rounded-full scale-125">
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </div>
+      )}
     </div>
   );
 };

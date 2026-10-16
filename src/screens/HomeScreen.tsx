@@ -18,7 +18,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToAngel }) => 
   useEffect(() => {
     playTrack('/audio/dummy_bgm.mp3', 'Anushka BGM 🎵');
 
-    // Trigger romantic confetti blast
     const timer = setTimeout(() => {
       setIsLoaded(true);
       confetti({
@@ -39,7 +38,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToAngel }) => 
       <SparklesOverlay />
 
       <div className="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center">
-        {/* Animated Romantic Greeting Header */}
         <div className="mb-8 flex flex-col items-center">
           <span
             className={`text-sm sm:text-base font-extrabold uppercase tracking-[0.35em] text-[#C9184A] mb-2 transition-all duration-1000 ${
@@ -61,7 +59,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToAngel }) => 
           </h1>
         </div>
 
-        {/* Romantic Quote Card */}
         <div
           className="w-full rounded-[28px] p-6 sm:p-7 glass-card mb-8 max-w-md mx-auto"
           style={{
@@ -75,7 +72,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToAngel }) => 
           </p>
         </div>
 
-        {/* Glowing Action Button */}
         <GlowingButton onClick={onNavigateToAngel}>
           <span>See My Angel 🕊️💖</span>
           <ArrowRight className="h-5 w-5" />
