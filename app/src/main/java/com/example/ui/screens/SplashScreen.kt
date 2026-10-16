@@ -31,6 +31,12 @@ fun SplashScreen(
         }
     }
 
+    // Safety timeout: In case VideoView gets stuck or phone cannot decode, auto proceed after 6s
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(6000)
+        completeOnce()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -40,17 +46,22 @@ fun SplashScreen(
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
-                VideoView(context).apply {
-                    val uri = Uri.parse("android.resource://${context.packageName}/${R.raw.zyvraon_intro}")
-                    setVideoURI(uri)
-                    setOnCompletionListener {
-                        completeOnce()
+                try {
+                    VideoView(context).apply {
+                        val uri = Uri.parse("android.resource://${context.packageName}/${R.raw.zyvraon_intro}")
+                        setVideoURI(uri)
+                        setOnCompletionListener {
+                            completeOnce()
+                        }
+                        setOnErrorListener { _, _, _ ->
+                            completeOnce()
+                            true
+                        }
+                        start()
                     }
-                    setOnErrorListener { _, _, _ ->
-                        completeOnce()
-                        true
-                    }
-                    start()
+                } catch (t: Throwable) {
+                    completeOnce()
+                    android.view.View(context)
                 }
             }
         )

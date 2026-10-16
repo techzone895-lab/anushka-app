@@ -3,7 +3,6 @@ plugins {
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
-  alias(libs.plugins.secrets)
 }
 
 android {
@@ -60,10 +59,6 @@ android {
   testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
-secrets {
-  propertiesFileName = ".env"
-}
-
 dependencies {
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.androidx.activity.compose)
@@ -75,7 +70,6 @@ dependencies {
   implementation("androidx.compose.ui:ui-tooling-preview")
   implementation("nl.dionsegijn:konfetti-compose:2.0.4")
   implementation("androidx.appcompat:appcompat:1.7.0")
-  implementation("androidx.biometric:biometric:1.1.0")
   implementation("com.airbnb.android:lottie-compose:6.4.0")
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.compose)

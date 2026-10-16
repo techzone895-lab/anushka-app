@@ -2,6 +2,7 @@ package com.example
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -12,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -21,7 +21,7 @@ import com.example.ui.components.FloatingMusicFab
 import com.example.ui.screens.*
 import com.example.ui.theme.MyApplicationTheme
 
-class MainActivity : FragmentActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,17 +76,17 @@ fun MainAppNavHost() {
     val isMuted by MusicManager.isMuted.collectAsState()
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route ?: "login"
+    val currentRoute = currentBackStackEntry?.destination?.route ?: "splash"
 
     // Synchronize music with current screen
     LaunchedEffect(currentRoute) {
         when (currentRoute) {
-            "login", "check", "surprise", "home" -> {
-                MusicManager.playTrack(context, R.raw.dummy_bgm)
-            }
             "splash" -> {
                 // Pause background music during intro video
                 MusicManager.pause()
+            }
+            "check", "surprise", "home" -> {
+                MusicManager.playTrack(context, R.raw.dummy_bgm)
             }
             "angel" -> {
                 MusicManager.playTrack(context, R.raw.bg_audio)
@@ -103,35 +103,9 @@ fun MainAppNavHost() {
     Box(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = "login",
+            startDestination = "splash",
             modifier = Modifier.fillMaxSize()
         ) {
-            composable("login") {
-                LoginScreen(
-                    isLoading = false,
-                    onSignInClick = {
-                        navController.navigate("biometric") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    },
-                    onSkipClick = {
-                        navController.navigate("biometric") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    }
-                )
-            }
-
-            composable("biometric") {
-                BiometricScreen(
-                    onAuthenticated = {
-                        navController.navigate("splash") {
-                            popUpTo("biometric") { inclusive = true }
-                        }
-                    }
-                )
-            }
-
             composable("splash") {
                 SplashScreen(
                     onVideoComplete = {
@@ -144,7 +118,7 @@ fun MainAppNavHost() {
 
             composable("check") {
                 BackHandler {
-                    // Do nothing
+                    (context as? ComponentActivity)?.finish()
                 }
                 AnushkaCheckScreen(
                     onYesClicked = {
@@ -170,7 +144,7 @@ fun MainAppNavHost() {
 
             composable("home") {
                 BackHandler {
-                    (context as? FragmentActivity)?.finish()
+                    (context as? ComponentActivity)?.finish()
                 }
                 HomeScreen(
                     onNavigateToAngel = {

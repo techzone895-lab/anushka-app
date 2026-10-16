@@ -65,10 +65,16 @@ object MusicManager {
                 prepareAsync()
                 setOnPreparedListener { mp ->
                     try {
+                        val volume = if (_isMuted.value) 0f else 1f
+                        mp.setVolume(volume, volume)
                         mp.start()
                     } catch (e: Exception) {
                         Log.e("MusicManager", "Error starting player after prepare", e)
                     }
+                }
+                setOnErrorListener { _, what, extra ->
+                    Log.w("MusicManager", "MediaPlayer error: what=$what, extra=$extra")
+                    true
                 }
             }
         } catch (e: Throwable) {
